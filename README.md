@@ -1,4 +1,4 @@
-# Sentinela - Monitor de Sistema
+# Sentinela - Bot Monitor de Sistema
 
 O Sentinela é um script em shell desenvolvido para monitorar o sistema em busca de uso elevado da CPU e detectar conexões suspeitas. Ele envia alertas através do Telegram sempre que uma condição crítica é detectada.
 
@@ -14,13 +14,6 @@ O Sentinela é um script em shell desenvolvido para monitorar o sistema em busca
 - Acesso à Internet para enviar alertas via Telegram
 - Conta e token de bot Telegram para receber as mensagens de alerta
 
-## Configuração
 
-### Passos Iniciais
 
-1. Clone este repositório:
-
-   ```bash
-   git clone https://github.com/seu_usuario/sentinela.git
-   cd sentinela
 
