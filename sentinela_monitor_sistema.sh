@@ -1,47 +1,38 @@
-#!/bin/bash
+# Sentinela - Monitor de Sistema
 
-# Configurações
-CPU_LIMIT=70
-TELEGRAM_TOKEN="TOKEN"
-TELEGRAM_CHAT_ID="ID"
-LOG_FILE="./monitor_sistema.log"
+O Sentinela é um script em shell para monitorar o uso da CPU e detectar conexões suspeitas em um sistema Linux. Quando o uso da CPU ultrapassa um limite especificado ou quando conexões suspeitas são detectadas, o script envia notificações via Telegram.
 
-# Função de log
-log() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
-}
+## Funcionalidades
 
-# Função para enviar mensagem no Telegram
-send_telegram() {
-    MESSAGE=$1
-    curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d text="$MESSAGE"
-}
+1. **Monitoramento de CPU**: 
+   - Verifica o uso da CPU em tempo real e envia um alerta se ultrapassar um limite especificado.
+   
+2. **Detecção de Conexões Suspeitas**: 
+   - Detecta conexões ativas em portas específicas (22, 23, 3389) e envia um alerta se houver conexões suspeitas.
 
-# Monitorar CPU
-monitor_cpu() {
-    CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
-    if (( $(echo "$CPU_USAGE > $CPU_LIMIT" | bc -l) )); then
-        log "Alerta: Uso de CPU alto - $CPU_USAGE%"
-        MESSAGE="Alerta: Uso de CPU alto - $CPU_USAGE%"
-        send_telegram "$MESSAGE"
-    fi
-}
+## Requisitos
 
-# Detectar conexões suspeitas
-monitor_connections() {
-    SUSPECT_CONNECTIONS=$(netstat -an | grep -E '22|23|3389' | wc -l)
-    if [ "$SUSPECT_CONNECTIONS" -gt 0 ]; then
-        log "Alerta: Conexões suspeitas detectadas - $SUSPECT_CONNECTIONS conexões"
-        MESSAGE="Alerta: Conexões suspeitas detectadas - $SUSPECT_CONNECTIONS conexões"
-        send_telegram "$MESSAGE"
-    fi
-}
+- **Sistema Operacional**: Linux
+- **Dependências**:
+  - `top` (geralmente disponível por padrão)
+  - `grep` (geralmente disponível por padrão)
+  - `sed` (geralmente disponível por padrão)
+  - `awk` (geralmente disponível por padrão)
+  - `bc` (instale com `sudo apt-get install bc` em sistemas baseados em Debian)
+  - `netstat` (instale com `sudo apt-get install net-tools` em sistemas baseados em Debian)
+  - `curl` (instale com `sudo apt-get install curl` em sistemas baseados em Debian)
 
-# Executar monitoramento de CPU e conexões
-monitor_cpu
-monitor_connections
+## Configuração
 
-log "Monitoramento concluído."
+### Variáveis de Configuração
 
-exit 0
+- `CPU_LIMIT`: Limite de uso da CPU para disparar um alerta (em porcentagem).
+- `TELEGRAM_TOKEN`: Token do bot do Telegram.
+- `TELEGRAM_CHAT_ID`: ID do chat do Telegram para enviar as notificações.
+- `LOG_FILE`: Caminho para o arquivo de log.
+- `SUSPEITAS_FILE`: Caminho para o arquivo que armazenará as conexões suspeitas.
 
+### Como Obter o TELEGRAM_CHAT_ID
+
+1. Inicie uma conversa com o bot do Telegram.
+2. Use o seguinte link para obter o seu Chat ID:
